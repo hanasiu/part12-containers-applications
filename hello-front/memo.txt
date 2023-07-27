@@ -1,0 +1,17 @@
+docker build . -t hello-front
+docker run -p 5001:3000 hello-front
+
+docker run -p 8000:80 hello-front
+
+docker build -f ./dev.Dockerfile -t hello-front-dev .
+
+docker run -p 3000:3000 -v "$(pwd):/usr/src/app/" hello-front-dev
+
+docker compose up
+
+docker exec hello-front-dev npm install axios, or add it to the package.json and run docker build again.
+
+docker compose run debug-helper wget -O - http://app:3000
+
+docker exec -it reverse-proxy bash 
+

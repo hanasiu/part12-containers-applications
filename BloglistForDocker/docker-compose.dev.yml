@@ -1,0 +1,41 @@
+services:
+  mongo:
+    image: mongo
+    ports:
+      - 3456:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: fake
+      MONGO_INITDB_ROOT_PASSWORD: fake123
+      MONGO_INITDB_DATABASE: BlogApp
+    volumes: 
+      - ./bloglist-backend/mongo_data:/data/db
+  app:
+    image: bloglist-redux
+    build: 
+      context: ./bloglist-redux/
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./bloglist-redux/:/usr/src/app # The path can be relative, so ./ is enough to say "the same location as the docker-compose.yml"
+    environment:
+      - REACT_APP_BACKEND_URL=http://localhost:3003/api
+    ports:
+      - 3000:3000
+    # container_name: frontend
+  server:
+    image: bloglist-backend-dev
+    build: 
+      context: ./bloglist-backend/
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./bloglist-backend/:/usr/src/app
+    ports:
+      - 3003:3003
+    environment:
+      - TEST_MONGODB_URI=mongodb+srv://fake:fake123@cluster0.hgvpa2v.mongodb.net/testBlogAppForDocker?retryWrites=true&w=majority
+      - SECRET=MERONG
+      - PORT=3003
+      - NODE_ENV=development
+    # container_name: backend
+   
+volumes:
+  mongo_data:
